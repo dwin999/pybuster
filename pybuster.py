@@ -11,7 +11,8 @@ import sys
 
 # Usage: pybuster.py <domain name> <wordlist>
 
-target = sys.argv[1]
+domain = sys.argv[1]
+global target
 
 # opens given wordlist, reads and removes carriage returns
 wordlist = open(sys.argv[2]).read().splitlines()
@@ -24,16 +25,23 @@ class queue_manager(threading.Thread):
         self.queue = queue
 
     def get_dir(self, word):
-            request = urllib2.Request("http://" + target + "/" + word)
-            request.get_method = lambda : 'HEAD'
+        global target
 
-            try:
-                response = urllib2.urlopen(request)
-            except urllib2.URLError, e:
-                if e.code == 404:
-                    pass
-            else:       # 200
-                print word + " - 200"
+        if word.find('.') == -1:
+            url = target + "/" + word + "/"
+        else:
+            url = target + "/" + word
+
+        request = urllib2.Request(url)
+        request.get_method = lambda : 'HEAD'
+
+        try:
+            response = urllib2.urlopen(request)
+        except urllib2.URLError, e:
+            if e.code == 404:
+                pass
+        else:       # 200
+            print word + " - 200"
 
     def run(self):
         while True:
@@ -43,6 +51,8 @@ class queue_manager(threading.Thread):
 
 
 def main():
+    global target
+
     for i in range(2):      #Number of threads
         t = queue_manager(queue)
         t.setDaemon(True)
@@ -50,6 +60,11 @@ def main():
 
     for word in wordlist:
         queue.put(word)
+
+    if not "http" in domain.lower():
+        target = "http://" + domain.lower()
+    else:
+        target = domain.lower()
 
     queue.join()
 main()
