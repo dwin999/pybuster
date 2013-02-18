@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+#
+# pybuster copyright (C) 2013 rbsec, CrumblyMongoose
+# Licensed under GPLv3, see LICENSE for details
+#
+
 import Queue
 import threading
 import urllib2
