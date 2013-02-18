@@ -4,12 +4,13 @@ import threading
 import urllib2
 import sys
 
-# Usage: pybuster.py <domain name>
+# Usage: pybuster.py <domain name> <wordlist>
 
 target = sys.argv[1]
 
-wordlist = ["admin", "test", "redmine", "robots.txt", "secret"]
-	            
+# opens given wordlist, reads and removes carriage returns
+wordlist = open(sys.argv[2]).read().splitlines()
+
 queue = Queue.Queue()
           
 class queue_manager(threading.Thread):
