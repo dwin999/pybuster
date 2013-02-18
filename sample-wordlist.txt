@@ -1,0 +1,10 @@
+admin
+index.php
+INDEX.php
+.htaccess
+robots.txt
+includes
+inc
+js
+dev
+backup
