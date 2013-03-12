@@ -27,9 +27,9 @@ class queue_manager(threading.Thread):
         request.get_method = lambda : 'HEAD'
 
         try:
-			if args.verbose == True:
-				print 'trying ' + url
-			response = urllib2.urlopen(request)
+            if args.verbose == True:
+                print 'trying ' + url
+            response = urllib2.urlopen(request)
         except urllib2.URLError, e:
             if e.code == 404:
                 pass
@@ -43,54 +43,47 @@ class queue_manager(threading.Thread):
             self.queue.task_done()
 
 
-########################################
 def argParser():
-#set global variable for arguments
-	global args
-	
-#parsing cmdline args
-	parser = argparse.ArgumentParser('pybuster.py')
-	parser.add_argument('-d', '--domain', help='target domain', dest='domain', required=True)
-	parser.add_argument('-l', '--list', help='wordlist to use', dest='wordlist', required=True)
-	parser.add_argument('-t', '--threads', help='number of threads', dest='threads', required=False, type=int, default=2)
-	parser.add_argument('-v', '--verbose', action="store_true", default=False, help='verbose mode', dest='verbose', required=False)
-#assign arguments to our global
-	args = parser.parse_args()
-#argparse usage: args.foo
-#e.g. domain = args.domain
-########################################			
+    global args
+    
+    parser = argparse.ArgumentParser('pybuster.py')
+    parser.add_argument('-d', '--domain', help='target domain', dest='domain', required=True)
+    parser.add_argument('-l', '--list', help='wordlist to use', dest='wordlist', required=True)
+    parser.add_argument('-t', '--threads', help='number of threads', dest='threads', required=False, type=int, default=2)
+    parser.add_argument('-v', '--verbose', action="store_true", default=False, help='verbose mode', dest='verbose', required=False)
+    args = parser.parse_args()
 
 def setVars():
-	global target
-	global domain
-	global wordlist
-	global queue
-	
-# opens given wordlist, reads and removes carriage returns
-	wordlist = open(args.wordlist).read().splitlines()
-#sets the domain
-	domain = args.domain
-#sets up the queue
-	queue = Queue.Queue()
-	
-#adds http to target if not already set
-	if not "http" in domain.lower():
-		target = "http://" + domain.lower()
-	else:
-		target = domain.lower()
-		
-		
+    global target
+    global domain
+    global wordlist
+    global queue
+    
+    # Open wordlist, removes carriage returns
+    wordlist = open(args.wordlist).read().splitlines()
+    domain = args.domain
+    queue = Queue.Queue()   # Initialise the queue
+    
+    
+    if not "http" in domain.lower():    # Assume http if not specified
+        target = "http://" + domain.lower()
+    else:
+        target = domain.lower()
+        
+        
 def main():
-	argParser()
-	setVars()
-	
-	for i in range(args.threads):      #Number of threads
-		t = queue_manager(queue)
-		t.setDaemon(True)
-		t.start()
+    argParser()
+    setVars()
+    
+    if args.threads > 20 or args.threads < 1:
+        args.threads = 2
+    for i in range(args.threads):      # Number of threads
+        t = queue_manager(queue)
+        t.setDaemon(True)
+        t.start()
 
-	for word in wordlist:
-		queue.put(word)
+    for word in wordlist:
+        queue.put(word)
 
-	queue.join()
+    queue.join()
 main()
