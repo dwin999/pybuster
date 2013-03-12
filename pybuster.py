@@ -48,7 +48,7 @@ def argParser():
     
     parser = argparse.ArgumentParser('pybuster.py')
     parser.add_argument('-d', '--domain', help='target domain', dest='domain', required=True)
-    parser.add_argument('-l', '--list', help='wordlist to use', dest='wordlist', required=True)
+    parser.add_argument('-w', '--wordlist', help='wordlist to use', dest='wordlist', required=True)
     parser.add_argument('-t', '--threads', help='number of threads', dest='threads', required=False, type=int, default=2)
     parser.add_argument('-v', '--verbose', action="store_true", default=False, help='verbose mode', dest='verbose', required=False)
     args = parser.parse_args()
