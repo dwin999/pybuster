@@ -12,7 +12,7 @@ import argparse
 
 # Usage: pybuster.py <domain name> <wordlist>
 
-class queue_manager(threading.Thread):
+class scanner(threading.Thread):
     def __init__(self, queue):
         threading.Thread.__init__(self)
         self.queue = queue
@@ -38,7 +38,10 @@ class queue_manager(threading.Thread):
 
     def run(self):
         while True:
-            word = self.queue.get(timeout=2)
+            try:
+                word = self.queue.get(timeout=1)
+            except:
+                return
             self.get_dir(word)
             self.queue.task_done()
 
@@ -78,12 +81,16 @@ def main():
     if args.threads > 20 or args.threads < 1:
         args.threads = 2
     for i in range(args.threads):      # Number of threads
-        t = queue_manager(queue)
+        t = scanner(queue)
         t.setDaemon(True)
         t.start()
 
     for word in wordlist:
         queue.put(word)
 
-    queue.join()
+    try:
+        for i in range(args.threads):
+            t.join(1024)       # Timeout needed or threads ignore exceptions..
+    except KeyboardInterrupt:
+        print "[-] Quitting..."
 main()
