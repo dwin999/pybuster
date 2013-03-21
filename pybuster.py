@@ -4,11 +4,11 @@
 # Licensed under GPLv3, see LICENSE for details
 #
 
+import argparse
 import Queue
+import sys
 import threading
 import urllib2
-import sys
-import argparse
 
 # Usage: pybuster.py <domain name> <wordlist>
 
@@ -38,7 +38,6 @@ class scanner(threading.Thread):
                 add_folder(word)
             else:       # File found
                 out.good(word + " - 200")
-
 
     def run(self):
         while True:
@@ -98,7 +97,9 @@ def set_vars():
     global domain
     global wordlist
     global queue
+    global out
     
+    out = output()
     # Open wordlist, removes carriage returns
     try:
         wordlist = open(args.wordlist).read().splitlines()
@@ -118,8 +119,6 @@ def add_folder(folder):
         queue.put(folder + "/" + word)
         
 def main():
-    global out
-    out = output()
     arg_parser()
     set_vars()
     
@@ -130,7 +129,7 @@ def main():
         t.setDaemon(True)
         t.start()
 
-    add_folder("")
+    add_folder("")  # Scan / on the site
 
     try:
         for i in range(args.threads):
