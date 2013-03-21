@@ -73,7 +73,7 @@ class col:
         end = ""
 
 
-def argParser():
+def arg_parser():
     global args
     
     parser = argparse.ArgumentParser('pybuster.py')
@@ -83,7 +83,7 @@ def argParser():
     parser.add_argument('-v', '--verbose', action="store_true", default=False, help='verbose mode', dest='verbose', required=False)
     args = parser.parse_args()
 
-def setVars():
+def set_vars():
     global target
     global domain
     global wordlist
@@ -108,8 +108,8 @@ def setVars():
 def main():
     global out
     out = output()
-    argParser()
-    setVars()
+    arg_parser()
+    set_vars()
     
     if args.threads > 20 or args.threads < 1:
         args.threads = 2
