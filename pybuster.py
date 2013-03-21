@@ -28,13 +28,13 @@ class scanner(threading.Thread):
 
         try:
             if args.verbose == True:
-                print 'trying ' + url
+                out.status("trying " + url)
             response = urllib2.urlopen(request)
         except urllib2.URLError, e:
             if e.code == 404:
                 pass
         else:       # 200
-            print word + " - 200"
+            out.good(word + " - 200")
 
     def run(self):
         while True:
@@ -44,6 +44,33 @@ class scanner(threading.Thread):
                 return
             self.get_dir(word)
             self.queue.task_done()
+
+
+class output:
+    def status(self, message):
+        print col.blue + "[*] " + col.end + message
+
+    def good(self, message):
+        print col.green + "[+] " + col.end + message
+
+    def warn(self, message):
+        print col.red + "[-] " + col.end + message
+
+    def fatal(self, message):
+        print col.red + "FATAL: " + col.end + message
+
+
+class col:
+    if sys.stdout.isatty():
+        green = '\033[32m'
+        blue = '\033[94m'
+        red = '\033[31m'
+        end = '\033[0m'
+    else:
+        green = ""
+        blue = ""
+        red = ""
+        end = ""
 
 
 def argParser():
@@ -61,11 +88,13 @@ def setVars():
     global domain
     global wordlist
     global queue
+    global out
     
     # Open wordlist, removes carriage returns
     wordlist = open(args.wordlist).read().splitlines()
     domain = args.domain
     queue = Queue.Queue()   # Initialise the queue
+    out = output()
     
     
     if not "http" in domain.lower():    # Assume http if not specified
@@ -92,5 +121,5 @@ def main():
         for i in range(args.threads):
             t.join(1024)       # Timeout needed or threads ignore exceptions..
     except KeyboardInterrupt:
-        print "[-] Quitting..."
+        out.fatal("Quitting...")
 main()
