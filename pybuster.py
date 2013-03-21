@@ -118,7 +118,7 @@ def add_folder(folder):
     for word in wordlist:
         queue.put(folder + "/" + word)
         
-def main():
+if __name__ == "__main__":
     arg_parser()
     set_vars()
     
@@ -136,4 +136,3 @@ def main():
             t.join(1024)       # Timeout needed or threads ignore exceptions..
     except KeyboardInterrupt:
         out.fatal("Quitting...")
-main()
