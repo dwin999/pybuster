@@ -102,7 +102,7 @@ def set_vars():
     out = output()
     # Open wordlist, removes carriage returns
     try:
-        wordlist = open(args.wordlist).read().splitlines()
+        wordlist = set(open(args.wordlist).read().splitlines())
     except:
         out.fatal("Could not open wordlist " + args.wordlist)
         sys.exit(1)
