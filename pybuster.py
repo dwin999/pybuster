@@ -27,8 +27,7 @@ class scanner(threading.Thread):
         request.get_method = lambda : 'HEAD'
 
         try:
-            if args.verbose == True:
-                out.status("trying " + url)
+            out.verbose("Trying " + url)
             response = urllib2.urlopen(request)
         except urllib2.URLError, e:
             if e.code == 404:
@@ -58,6 +57,10 @@ class output:
     def good(self, message):
         print col.green + "[+] " + col.end + message
 
+    def verbose(self, message):
+        if args.verbose:
+            print col.brown + "[v] " + col.end + message
+
     def warn(self, message):
         print col.red + "[-] " + col.end + message
 
@@ -70,11 +73,13 @@ class col:
         green = '\033[32m'
         blue = '\033[94m'
         red = '\033[31m'
+        brown = '\033[33m'
         end = '\033[0m'
     else:
         green = ""
         blue = ""
         red = ""
+        brown = ""
         end = ""
 
 
