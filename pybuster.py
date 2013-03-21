@@ -19,9 +19,9 @@ class scanner(threading.Thread):
 
     def get_dir(self, word):
         if word.find('.') == -1:
-            url = target + "/" + word + "/"
+            url = target + word + "/"
         else:
-            url = target + "/" + word
+            url = target + word
 
         request = urllib2.Request(url)
         request.get_method = lambda : 'HEAD'
@@ -34,7 +34,12 @@ class scanner(threading.Thread):
             if e.code == 404:
                 pass
         else:       # 200
-            out.good(word + " - 200")
+            if word.find('.') == -1:        # Folder found
+                out.good(word + "/ - 200")
+                add_folder(word)
+            else:       # File found
+                out.good(word + " - 200")
+
 
     def run(self):
         while True:
@@ -98,12 +103,14 @@ def set_vars():
     domain = args.domain
     queue = Queue.Queue()   # Initialise the queue
     
-    
     if not "http" in domain.lower():    # Assume http if not specified
         target = "http://" + domain.lower()
     else:
         target = domain.lower()
         
+def add_folder(folder):
+    for word in wordlist:
+        queue.put(folder + "/" + word)
         
 def main():
     global out
@@ -118,8 +125,7 @@ def main():
         t.setDaemon(True)
         t.start()
 
-    for word in wordlist:
-        queue.put(word)
+    add_folder("")
 
     try:
         for i in range(args.threads):
