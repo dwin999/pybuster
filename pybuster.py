@@ -88,13 +88,15 @@ def setVars():
     global domain
     global wordlist
     global queue
-    global out
     
     # Open wordlist, removes carriage returns
-    wordlist = open(args.wordlist).read().splitlines()
+    try:
+        wordlist = open(args.wordlist).read().splitlines()
+    except:
+        out.fatal("Could not open wordlist " + args.wordlist)
+        sys.exit(1)
     domain = args.domain
     queue = Queue.Queue()   # Initialise the queue
-    out = output()
     
     
     if not "http" in domain.lower():    # Assume http if not specified
@@ -104,6 +106,8 @@ def setVars():
         
         
 def main():
+    global out
+    out = output()
     argParser()
     setVars()
     
