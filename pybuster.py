@@ -5,6 +5,7 @@
 #
 
 import argparse
+import os
 import Queue
 import sys
 import threading
@@ -87,7 +88,7 @@ def arg_parser():
     
     parser = argparse.ArgumentParser('pybuster.py')
     parser.add_argument('-d', '--domain', help='target domain', dest='domain', required=True)
-    parser.add_argument('-w', '--wordlist', help='wordlist to use', dest='wordlist', required=True)
+    parser.add_argument('-w', '--wordlist', help='wordlist to use', dest='wordlist', required=False)
     parser.add_argument('-t', '--threads', help='number of threads', dest='threads', required=False, type=int, default=2)
     parser.add_argument('-v', '--verbose', action="store_true", default=False, help='verbose mode', dest='verbose', required=False)
     args = parser.parse_args()
@@ -101,6 +102,8 @@ def set_vars():
     
     out = output()
     # Open wordlist, removes carriage returns
+    if not args.wordlist:   # Try to use default wordlist if non specified
+        args.wordlist = os.path.dirname(os.path.realpath(__file__)) + "/wordlist.txt"
     try:
         wordlist = set(open(args.wordlist).read().splitlines())
     except:
