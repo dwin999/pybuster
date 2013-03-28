@@ -33,12 +33,14 @@ class scanner(threading.Thread):
         except urllib2.URLError, e:
             if e.code == 404:
                 pass
+            else:
+                print word + " - " + col.red + str(e.code) + col.end
         else:       # 200
             if word.find('.') == -1:        # Folder found
-                out.good(word + "/ - 200")
+                print word + "/ - " + col.green + "200" + col.end
                 add_folder(word)
             else:       # File found
-                out.good(word + " - 200")
+                print word + " - " + col.green + "200" + col.end
 
     def run(self):
         while True:
