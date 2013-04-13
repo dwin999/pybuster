@@ -38,7 +38,8 @@ class scanner(threading.Thread):
         else:       # 200
             if word.find('.') == -1:        # Folder found
                 print word + "/ - " + col.green + "200" + col.end
-                add_folder(word)
+                if args.recursive:
+                    add_folder(word)
             else:       # File found
                 print word + " - " + col.green + "200" + col.end
 
@@ -92,6 +93,7 @@ def arg_parser():
     parser.add_argument('-d', '--domain', help='target domain', dest='domain', required=True)
     parser.add_argument('-w', '--wordlist', help='wordlist to use', dest='wordlist', required=False)
     parser.add_argument('-t', '--threads', help='number of threads', dest='threads', required=False, type=int, default=2)
+    parser.add_argument('-r', '--no-recursive', action="store_false", default=True, help='disable recursive scanning', dest='recursive', required=False)
     parser.add_argument('-v', '--verbose', action="store_true", default=False, help='verbose mode', dest='verbose', required=False)
     args = parser.parse_args()
 
