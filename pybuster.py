@@ -28,7 +28,6 @@ class scanner(threading.Thread):
         request.get_method = lambda : 'HEAD'
 
         try:
-            out.verbose("Trying " + url)
             response = urllib2.urlopen(request)
         except urllib2.URLError, e:
             if e.code == 404:
@@ -37,11 +36,12 @@ class scanner(threading.Thread):
                 print word + " - " + col.red + str(e.code) + col.end
         else:       # 200
             if word.find('.') == -1:        # Folder found
-                print word + "/ - " + col.green + "200" + col.end
+                print word + "/ - " + col.green + str(response.getcode()) + col.end
                 if args.recursive:
+                    out.verbose("Adding folder " + word + " to scan")
                     add_folder(word)
             else:       # File found
-                print word + " - " + col.green + "200" + col.end
+                print word + " - " + col.green + str(response.getcode()) + col.end
 
     def run(self):
         while True:
