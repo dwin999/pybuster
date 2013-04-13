@@ -6,10 +6,18 @@
 
 import argparse
 import os
-import Queue
 import sys
 import threading
-import urllib2
+
+try:    # Ugly hack because Python3 decided to rename Queue to queue
+    import Queue
+except ImportError:
+    import queue as Queue
+
+try:    # Another Python3 rename
+    import urllib2
+except ImportError:
+    import urllib.request as urllib2
 
 # Usage: pybuster.py <domain name> <wordlist>
 
@@ -29,19 +37,19 @@ class scanner(threading.Thread):
 
         try:
             response = urllib2.urlopen(request)
-        except urllib2.URLError, e:
+        except urllib2.URLError as e:
             if e.code == 404:
                 pass
             else:
-                print word + " - " + col.red + str(e.code) + col.end
+                print(word + " - " + col.red + str(e.code) + col.end)
         else:       # 200
             if word.find('.') == -1:        # Folder found
-                print word + "/ - " + col.green + str(response.getcode()) + col.end
+                print(word + "/ - " + col.green + str(response.getcode()) + col.end)
                 if args.recursive:
                     out.verbose("Adding folder " + word + " to scan")
                     add_folder(word)
             else:       # File found
-                print word + " - " + col.green + str(response.getcode()) + col.end
+                print(word + " - " + col.green + str(response.getcode()) + col.end)
 
     def run(self):
         while True:
@@ -55,20 +63,20 @@ class scanner(threading.Thread):
 
 class output:
     def status(self, message):
-        print col.blue + "[*] " + col.end + message
+        print(col.blue + "[*] " + col.end + message)
 
     def good(self, message):
-        print col.green + "[+] " + col.end + message
+        print(col.green + "[+] " + col.end + message)
 
     def verbose(self, message):
         if args.verbose:
-            print col.brown + "[v] " + col.end + message
+            print(col.brown + "[v] " + col.end + message)
 
     def warn(self, message):
-        print col.red + "[-] " + col.end + message
+        print(col.red + "[-] " + col.end + message)
 
     def fatal(self, message):
-        print col.red + "FATAL: " + col.end + message
+        print(col.red + "FATAL: " + col.end + message)
 
 
 class col:
