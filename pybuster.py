@@ -86,12 +86,12 @@ class output:
 
 class col:
     if sys.stdout.isatty() and platform.system() != "Windows":
-        green = '\033[32m' 
+        green = '\033[32m'
         blue = '\033[94m'
         red = '\033[31m'
         brown = '\033[33m'
         end = '\033[0m'
-    else:# Disalbing col for windows and pipes
+    else:# Disabling col for windows and pipes
         green = ""
         blue = ""
         red = ""
