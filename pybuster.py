@@ -43,6 +43,10 @@ class scanner(threading.Thread):
                 pass
             else:
                 print(word + " - " + col.red + str(e.code) + col.end)
+        except ConnectionResetError:
+            out.fatal("Could not connect to server")
+            sys.exit(1)
+
         else:       # 200
             if word.find('.') == -1:        # Folder found
                 print(word + "/ - " + col.green + str(response.getcode()) + col.end)
