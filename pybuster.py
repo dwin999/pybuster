@@ -81,7 +81,7 @@ class output:
         print(col.red + "[-] " + col.end + message)
 
     def fatal(self, message):
-        print(col.red + "FATAL: " + col.end + message)
+        print(col.red + "FATAL: " + message + col.end)
 
 
 class col:
