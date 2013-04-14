@@ -8,6 +8,7 @@ import argparse
 import os
 import sys
 import threading
+import platform
 
 try:    # Ugly hack because Python3 decided to rename Queue to queue
     import Queue
@@ -80,7 +81,7 @@ class output:
 
 
 class col:
-    if sys.stdout.isatty():
+    if sys.stdout.isatty() and platform.system() != "Windows":
         green = '\033[32m'
         blue = '\033[94m'
         red = '\033[31m'
